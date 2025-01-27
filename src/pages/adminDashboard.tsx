@@ -91,6 +91,7 @@ const Dashboard = ({ username, role }: DashboardProps) => {
         <nav className="px-2 py-4 space-y-2">
           <a href="#" className="block text-black hover:bg-gray-700 p-3 rounded-md">Dashboard</a>
           <a href="#" className="block text-black hover:bg-gray-700 p-3 rounded-md">Users</a>
+          <a href="adminStudent" className="block text-black hover:bg-gray-700 p-3 rounded-md">Student</a>
           <a href="#" className="block text-black hover:bg-gray-700 p-3 rounded-md">Settings</a>
           <a href="#" className="block text-black hover:bg-gray-700 p-3 rounded-md">Reports</a>
 
