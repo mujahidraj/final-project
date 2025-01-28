@@ -31,7 +31,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     return {
       props: {
         username: decoded.username,
-        role: decoded.role, // Pass the role to the page props
+        role: decoded.role,
       },
     };
   } catch (error) {
@@ -90,7 +90,7 @@ const Dashboard = ({ username, role }: DashboardProps) => {
         {/* Sidebar Menu */}
         <nav className="px-2 py-4 space-y-2">
           <a href="#" className="block text-black hover:bg-gray-700 p-3 rounded-md">Dashboard</a>
-          <a href="#" className="block text-black hover:bg-gray-700 p-3 rounded-md">Users</a>
+          <a href="/adminCourse" className="block text-black hover:bg-gray-700 p-3 rounded-md">Courses</a>
           <a href="adminStudent" className="block text-black hover:bg-gray-700 p-3 rounded-md">Student</a>
           <a href="#" className="block text-black hover:bg-gray-700 p-3 rounded-md">Settings</a>
           <a href="#" className="block text-black hover:bg-gray-700 p-3 rounded-md">Reports</a>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import "../globals.css"
+import { motion } from 'framer-motion';
+import "../globals.css";
 
 export default function Login() {
   const [formData, setFormData] = useState({ username: '', password: '' });
@@ -21,7 +22,7 @@ export default function Login() {
 
     if (res.ok) {
       console.log('Login successful');
-      router.push('/studentDashboard'); // Redirect after successful login
+      router.push('/studentDashboard');
     } else {
       console.error('Login failed:', data.error);
     }
@@ -35,36 +36,56 @@ export default function Login() {
     }));
   };
 
-  // Student Logout functionality
   const handleLogout = async () => {
     const res = await fetch('/api/studentLogout', { method: 'POST' });
     if (res.ok) {
       console.log('Logout successful');
-      router.push('/studentLogin'); // Redirect to login after successful logout
+      router.push('/studentLogin');
     } else {
       console.error('Logout failed');
     }
   };
 
-  return (
-    <div className="flex flex-col items-center max-w-full justify-center h-screen bg-gradient-to-r from-purple-600 via-blue-500 to-green-500">
-      {/* Logo and Company Name */}
-      <div className="flex items-center mb-6">
-        <img src="./image/1.png" alt="TechWisdom Logo" className="w-12 h-12 mr-2" />
-        <h1 className="text-4xl font-semibold text-white">TechWisdom</h1>
-      </div>
+  const containerVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  };
 
-      <h2 className="text-3xl mb-4 text-white font-bold">Student Sign In</h2>
+  const buttonVariants = {
+    hover: { scale: 1.05, transition: { duration: 0.2 } },
+    tap: { scale: 0.95 },
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-600 via-blue-500 to-green-500 p-4">
+      {/* Logo and Company Name */}
+      <motion.div
+        className="flex items-center mb-8"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <img src="./image/1.png" alt="TechWisdom Logo" className="w-16 h-16 mr-3" />
+        <h1 className="text-5xl font-bold text-white">TechWisdom</h1>
+      </motion.div>
 
       {/* Login Form */}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-8 bg-white rounded-lg shadow-lg max-w-md w-full">
+      <motion.form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-6 p-10 bg-white rounded-2xl shadow-2xl max-w-md w-full"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <h2 className="text-4xl mb-6 text-center text-gray-800 font-bold">Student Sign In</h2>
+
         <input
           type="text"
           name="username"
           placeholder="Username"
           value={formData.username}
           onChange={handleChange}
-          className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+          className="p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black placeholder-gray-400"
           required
         />
         <input
@@ -73,18 +94,32 @@ export default function Login() {
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}
-          className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+          className="p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black placeholder-gray-400"
           required
         />
-        <button type="submit" className="bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 transition duration-300">
+        <motion.button
+          type="submit"
+          className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-lg hover:from-blue-600 hover:to-blue-700 transition duration-300 font-semibold text-lg"
+          variants={buttonVariants}
+          whileHover="hover"
+          whileTap="tap"
+        >
           Login
-        </button>
-      </form>
+        </motion.button>
+      </motion.form>
 
       {/* Sign Up Link */}
-      <p className="mt-4 text-white text-sm">
-        Don't have an account? <a href="/studentRegister" className="text-blue-400 hover:text-blue-600">Sign Up</a>
-      </p>
+      <motion.p
+        className="mt-6 text-white text-lg"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        Don't have an account?{' '}
+        <a href="/studentRegister" className="text-blue-300 hover:text-blue-400 font-semibold">
+          Sign Up
+        </a>
+      </motion.p>
     </div>
   );
 }

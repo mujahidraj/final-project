@@ -8,10 +8,10 @@ import { setCookie } from 'nookies';
 // /pages/api/login.ts
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    const { username, password } = req.body;
+    const { username, password ,role } = req.body;
 
     try {
-      const admin = await prisma.admin.findUnique({
+      const admin = await prisma.adminUser.findUnique({
         where: { username },
       });
 
@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(401).json({ error: 'Invalid credentials' });
       }
 
-      const token = sign({ username: admin.username, role: 'admin' }, process.env.JWT_SECRET!, {
+      const token = sign({ username: admin.username, role: admin.role }, process.env.JWT_SECRET!, {
         expiresIn: '1h',
       });
 

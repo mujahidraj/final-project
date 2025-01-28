@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const hashedPassword = await argon2.hash(password);
 
       // Create the admin in the database
-      const admin = await prisma.admin.create({
+      const admin = await prisma.adminUser.create({
         data: {
           username,
           password: hashedPassword,

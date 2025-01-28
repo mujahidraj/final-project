@@ -97,143 +97,167 @@ const Profile = ({
   };
 
   return (
-    <div className="flex  bg-gray-100 justify-center items-center">
-      <div className="max-w-4xl h-full w-full bg-white shadow-lg rounded-lg p-6 m-10">
-        <div className="flex justify-between items-center border-b pb-4 mb-4">
-          <h3 className="text-2xl font-medium text-black">User Profile</h3>
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600 transition"
-          >
-            Logout
-          </button>
+    <div className="flex bg-gradient-to-r from-blue-50 to-purple-50 justify-center items-center min-h-screen p-4">
+      <div className="max-w-4xl w-full bg-white shadow-2xl rounded-2xl overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6">
+          <div className="flex justify-between items-center">
+            <h3 className="text-2xl font-bold text-white">User Profile</h3>
+            <button
+              onClick={handleLogout}
+              className="bg-white text-blue-600 px-4 py-2 rounded-full hover:bg-blue-50 transition-all duration-300"
+            >
+              Logout
+            </button>
+          </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="p-8">
           {!isEditing ? (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="font-medium text-black">Full name</div>
-                <div className="sm:col-span-2 text-black">{first_name} {last_name}</div>
+            <div className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
+                  <h4 className="text-lg font-semibold text-gray-700 mb-4">Personal Information</h4>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm text-gray-500">Full Name</label>
+                      <p className="text-gray-900 font-medium">{first_name} {last_name}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-500">Email Address</label>
+                      <p className="text-gray-900 font-medium">{email}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-500">Phone Number</label>
+                      <p className="text-gray-900 font-medium">{phone}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-500">Gender</label>
+                      <p className="text-gray-900 font-medium">{gender}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
+                  <h4 className="text-lg font-semibold text-gray-700 mb-4">Address Information</h4>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm text-gray-500">Present Address</label>
+                      <p className="text-gray-900 font-medium">{present_address}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-500">Permanent Address</label>
+                      <p className="text-gray-900 font-medium">{permanent_address}</p>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="font-medium text-black">Email address</div>
-                <div className="sm:col-span-2 text-black">{email}</div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="font-medium text-black">Phone number</div>
-                <div className="sm:col-span-2 text-black">{phone}</div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="font-medium text-black">Gender</div>
-                <div className="sm:col-span-2 text-black">{gender}</div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="font-medium text-black">Present Address</div>
-                <div className="sm:col-span-2 text-black">{present_address}</div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="font-medium text-black">Permanent Address</div>
-                <div className="sm:col-span-2 text-black">{permanent_address}</div>
-              </div>
-              <div className="mt-6">
+
+              <div className="flex justify-center">
                 <button
                   onClick={handleEdit}
-                  className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition"
+                  className="bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transition-all duration-300"
                 >
                   Edit Profile
                 </button>
               </div>
-            </>
+            </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-black">First Name</label>
-                  <input
-                    type="text"
-                    name="first_name"
-                    value={formData.first_name}
-                    onChange={handleChange}
-                    className="text-gray-500 border-2 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
+                  <h4 className="text-lg font-semibold text-gray-700 mb-4">Edit Personal Information</h4>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm text-gray-500">First Name</label>
+                      <input
+                        type="text"
+                        name="first_name"
+                        value={formData.first_name}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-500">Last Name</label>
+                      <input
+                        type="text"
+                        name="last_name"
+                        value={formData.last_name}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-500">Email</label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-500">Phone</label>
+                      <input
+                        type="number"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-500">Gender</label>
+                      <input
+                        type="text"
+                        name="gender"
+                        value={formData.gender}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-black">Last Name</label>
-                  <input
-                    type="text"
-                    name="last_name"
-                    value={formData.last_name}
-                    onChange={handleChange}
-                    className=" text-gray-500 border-2 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-black">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className=" text-gray-500  border-2 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-black">Phone</label>
-                  <input
-                    type="number"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className=" text-gray-500  border-2 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-black">Gender</label>
-                  <input
-                    type="text"
-                    name="gender"
-                    value={formData.gender}
-                    onChange={handleChange}
-                    className=" text-gray-500  border-2 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-black">Present Address</label>
-                  <input
-                    type="text"
-                    name="present_address"
-                    value={formData.present_address}
-                    onChange={handleChange}
-                    className=" text-gray-500  border-2 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-black">Permanent Address</label>
-                  <input
-                    type="text"
-                    name="permanent_address"
-                    value={formData.permanent_address}
-                    onChange={handleChange}
-                    className=" text-gray-500  border-2 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+
+                <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
+                  <h4 className="text-lg font-semibold text-gray-700 mb-4">Edit Address Information</h4>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm text-gray-500">Present Address</label>
+                      <input
+                        type="text"
+                        name="present_address"
+                        value={formData.present_address}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-500">Permanent Address</label>
+                      <input
+                        type="text"
+                        name="permanent_address"
+                        value={formData.permanent_address}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex space-x-4 mt-4">
-                <button type="submit" className="bg-green-500 text-white p-3 rounded-md hover:bg-green-600 transition w-full sm:w-auto">
+              <div className="flex justify-center space-x-4">
+                <button
+                  type="submit"
+                  className="bg-green-600 text-white px-6 py-3 rounded-full hover:bg-green-700 transition-all duration-300"
+                >
                   Save Changes
                 </button>
                 <button
                   type="button"
                   onClick={handleCancel}
-                  className="bg-gray-500 text-white p-3 rounded-md hover:bg-gray-600 transition w-full sm:w-auto"
+                  className="bg-gray-600 text-white px-6 py-3 rounded-full hover:bg-gray-700 transition-all duration-300"
                 >
                   Cancel
                 </button>

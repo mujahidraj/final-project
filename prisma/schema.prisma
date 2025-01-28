@@ -26,9 +26,16 @@ datasource db {
     permanent_address String
   }
 
-
-model admin {
+model course{
   id Int @id @default(autoincrement())
+  title String
+  description String
+  price String
+}
+
+model AdminUser {
+  id       Int    @id @default(autoincrement())
   username String @unique
   password String
+  role     String @default("admin")
 }
