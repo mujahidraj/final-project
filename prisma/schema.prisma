@@ -14,17 +14,23 @@ datasource db {
 }
 
   model students {
-    id                Int    @id @default(autoincrement())
-    first_name        String
-    last_name         String
-    email             String
-    username          String @unique
-    password          String  @unique
-    phone             String
-    gender            String
-    present_address   String
-    permanent_address String
-  }
+  id          Int       @id @default(autoincrement())
+  username    String       @unique
+  password    String
+  name        String
+  surname     String
+  email       String?      @unique
+  phone       String?      @unique
+  address     String
+  img         String?
+  bloodType   String
+  sex         String
+  createdAt   DateTime     @default(now())
+  birthday    DateTime
+  enrollments Enrollment[]
+  reviews     Review[]
+  transactions Transaction[]
+}
 
 model course{
   id Int @id @default(autoincrement())
@@ -38,4 +44,95 @@ model AdminUser {
   username String @unique
   password String
   role     String @default("admin")
+}
+
+
+
+model teacher {
+  id        Int    @id @default(autoincrement())
+  username  String    @unique
+  password String
+  name      String
+  surname   String
+  email     String?   @unique
+  phone     String?   @unique
+  address   String
+  img       String?
+  bloodType String
+  sex       String
+  createdAt DateTime  @default(now())
+  courses   Course[]
+  lessons   Lesson[]
+  birthday  DateTime
+}
+
+model Course {
+  id         Int        @id @default(autoincrement())
+  name       String     @unique
+  description String?
+  duration   Int        // Duration in minutes
+  createdAt  DateTime   @default(now())
+  teacherId  Int
+  teacher    teacher    @relation(fields: [teacherId], references: [id])
+  enrollments Enrollment[]
+  reviews     Review[]
+  lessons    Lesson[]
+}
+
+model Enrollment {
+  id          Int        @id @default(autoincrement())
+  studentId   Int
+  student     students   @relation(fields: [studentId], references: [id])
+  courseId    Int
+  course      Course    @relation(fields: [courseId], references: [id])
+  enrolledAt  DateTime  @default(now())
+  completedAt DateTime?
+  status      EnrollmentStatus
+  transactions Transaction[]
+}
+
+model Lesson {
+  id        Int      @id @default(autoincrement())
+  name      String
+  startTime DateTime
+  endTime   DateTime
+
+  courseId  Int
+  course    Course   @relation(fields: [courseId], references: [id])
+  teacherId Int
+  teacher   teacher  @relation(fields: [teacherId], references: [id])
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  rating     Int      // Rating out of 5
+  comment    String?
+  createdAt  DateTime @default(now())
+
+  studentId  Int
+  student    students  @relation(fields: [studentId], references: [id])
+
+  courseId   Int
+  course     Course   @relation(fields: [courseId], references: [id])
+}
+
+model Transaction {
+  id          Int      @id @default(autoincrement())
+  amount      Float
+  date        DateTime @default(now())
+  paymentMethod String
+
+  enrollmentId Int
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id])
+  studentId Int
+  student students @relation(fields: [studentId],references: [id])
+}
+
+
+
+enum EnrollmentStatus {
+  PENDING
+  COMPLETED
+  IN_PROGRESS
+  CANCELLED
 }

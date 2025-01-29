@@ -21,7 +21,7 @@ export default function Register() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Submitting:', formData);
-    const res = await fetch('/api/studentRegister', {
+    const res = await fetch('/api/teacherRegister', {  // Adjusted endpoint for teacher registration
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData),
@@ -30,7 +30,7 @@ export default function Register() {
     console.log(result);
     if (res.ok) {
       alert('Registration successful');
-      router.push('/studentLogin'); // Redirect to login page after successful registration
+      router.push('/teacherLogin'); // Redirect to teacher login page after successful registration
     } else {
       alert(`Registration failed: ${result.error}`);
     }
@@ -43,7 +43,7 @@ export default function Register() {
           <img src="/image/1.png" alt="Company Logo" className="w-24 h-24 mb-2" />
           <h1 className="text-2xl font-bold text-gray-900">TechWisdom</h1>
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Student Registration</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Teacher Registration</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex space-x-8">
             <div className="flex flex-col w-1/2 space-y-4">

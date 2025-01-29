@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
 import "../globals.css";
 
-export default function Login() {
+export default function TeacherLogin() {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const router = useRouter();
 
@@ -11,7 +11,7 @@ export default function Login() {
     e.preventDefault();
 
     const { username, password } = formData;
-    const res = await fetch('/api/studentLogin', {
+    const res = await fetch('/api/teacherLogin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
@@ -21,7 +21,7 @@ export default function Login() {
 
     if (res.ok) {
       console.log('Login successful');
-      router.push('/studentDashboard');
+      router.push('/teacherDashboard');
     } else {
       console.error('Login failed:', data.error);
     }
@@ -64,7 +64,7 @@ export default function Login() {
         animate="visible"
       >
         <h2 className="text-4xl mb-6 text-center text-gray-800 font-bold">
-          Student Sign In
+          Teacher Sign In
         </h2>
 
         <label htmlFor="username" className="sr-only">
@@ -114,7 +114,7 @@ export default function Login() {
         animate="visible"
       >
         Don't have an account?{' '}
-        <a href="/studentRegister" className="text-blue-300 hover:text-blue-400 font-semibold">
+        <a href="/teacherRegister" className="text-blue-300 hover:text-blue-400 font-semibold">
           Sign Up
         </a>
       </motion.p>

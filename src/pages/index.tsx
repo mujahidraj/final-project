@@ -56,6 +56,18 @@ export default function Home() {
                 <LockClosedIcon className="mr-3 h-6 w-6 text-white" />
                 Admin Login
               </motion.button>
+
+              {/* Teacher Login */}
+              <motion.button
+                onClick={() => router.push('teacherLogin')}
+                className="flex items-center justify-center w-full px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+              >
+                <LockClosedIcon className="mr-3 h-6 w-6 text-white" />
+                Teacher Login
+              </motion.button>
             </div>
           </div>
 
@@ -83,6 +95,18 @@ export default function Home() {
               >
                 <PencilIcon className="mr-3 h-6 w-6 text-white" />
                 Admin Registration
+              </motion.button>
+
+              {/* Teacher Registration */}
+              <motion.button
+                onClick={() => router.push('/teacherRegister')}
+                className="flex items-center justify-center w-full px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-red-500 to-red-600 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+              >
+                <PencilIcon className="mr-3 h-6 w-6 text-white" />
+                Teacher Registration
               </motion.button>
             </div>
           </div>

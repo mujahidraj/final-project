@@ -7,14 +7,15 @@ import "../globals.css";
 
 interface Student {
   id: number;
-  first_name: string;
-  last_name: string;
+  name: string;
+  surname: string;
   email: string;
   username: string;
   phone: string;
-  gender: string;
-  present_address: string;
-  permanent_address: string;
+  sex: string;
+  address: string;
+  bloodType: string;
+  birthday: string;
 }
 
 interface StudentsPageProps {
@@ -79,7 +80,7 @@ const StudentsPage = ({ students, username, role }: StudentsPageProps) => {
     setCurrentStudent(student);
   };
 
-  const handleDelete = async (studentId: number, first_name: string, last_name: string) => {
+  const handleDelete = async (studentId: number, name: string, surname: string) => {
     await fetch('/api/adminDeleteStudent', {
       method: 'DELETE',
       body: JSON.stringify({ studentId }),
@@ -88,7 +89,7 @@ const StudentsPage = ({ students, username, role }: StudentsPageProps) => {
       },
     });
 
-    alert(`Student ${first_name} ${last_name} has been deleted.`);
+    alert(`Student ${name} ${surname} has been deleted.`);
     setTimeout(() => {
       router.reload();
     }, 2000);
@@ -110,7 +111,7 @@ const StudentsPage = ({ students, username, role }: StudentsPageProps) => {
     });
 
     if (res.ok) {
-      alert(`${currentStudent.first_name} ${currentStudent.last_name} has been updated.`);
+      alert(`${currentStudent.name} ${currentStudent.surname} has been updated.`);
       setIsEditing(false);
       router.reload();
     } else {
@@ -125,28 +126,30 @@ const StudentsPage = ({ students, username, role }: StudentsPageProps) => {
         <table className="min-w-full bg-white rounded-lg shadow-lg overflow-hidden">
           <thead className="bg-gray-800 text-white text-xs">
             <tr>
-              <th className="px-4 py-2 text-left">First Name</th>
-              <th className="px-4 py-2 text-left">Last Name</th>
+              <th className="px-4 py-2 text-left">Name</th>
+              <th className="px-4 py-2 text-left">Surname</th>
               <th className="px-4 py-2 text-left">Email</th>
               <th className="px-4 py-2 text-left">Username</th>
               <th className="px-4 py-2 text-left">Phone</th>
               <th className="px-4 py-2 text-left">Gender</th>
-              <th className="px-4 py-2 text-left">Present Address</th>
-              <th className="px-4 py-2 text-left">Permanent Address</th>
+              <th className="px-4 py-2 text-left">Address</th>
+              <th className="px-4 py-2 text-left">Blood Group</th>
+              <th className="px-4 py-2 text-left">Birthday</th>
               <th className="px-4 py-2 text-left">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-300 text-xs">
             {students.map((student) => (
               <tr key={student.id} className="hover:bg-gray-100 transition duration-200 ease-in-out">
-                <td className="px-4 py-3 text-sm text-gray-700">{student.first_name}</td>
-                <td className="px-4 py-3 text-sm text-gray-700">{student.last_name}</td>
+                <td className="px-4 py-3 text-sm text-gray-700">{student.name}</td>
+                <td className="px-4 py-3 text-sm text-gray-700">{student.surname}</td>
                 <td className="px-4 py-3 text-sm text-gray-700">{student.email}</td>
                 <td className="px-4 py-3 text-sm text-gray-700">{student.username}</td>
                 <td className="px-4 py-3 text-sm text-gray-700">{student.phone}</td>
-                <td className="px-4 py-3 text-sm text-gray-700">{student.gender}</td>
-                <td className="px-4 py-3 text-sm text-gray-700">{student.present_address}</td>
-                <td className="px-4 py-3 text-sm text-gray-700">{student.permanent_address}</td>
+                <td className="px-4 py-3 text-sm text-gray-700">{student.sex}</td>
+                <td className="px-4 py-3 text-sm text-gray-700">{student.address}</td>
+                <td className="px-4 py-3 text-sm text-gray-700">{student.bloodType}</td>
+                <td className="px-4 py-3 text-sm text-gray-700">{student.birthday}</td>
                 <td className="px-4 py-3 text-sm">
                   <button
                     className="text-blue-600 hover:text-blue-800 font-semibold transition duration-300 ease-in-out"
@@ -156,7 +159,7 @@ const StudentsPage = ({ students, username, role }: StudentsPageProps) => {
                   </button>
                   <button
                     className="text-red-600 hover:text-red-800 font-semibold transition duration-300 ease-in-out ml-4"
-                    onClick={() => handleDelete(student.id, student.first_name, student.last_name)}
+                    onClick={() => handleDelete(student.id, student.name, student.surname)}
                   >
                     Delete
                   </button>
@@ -171,24 +174,101 @@ const StudentsPage = ({ students, username, role }: StudentsPageProps) => {
             <div className="bg-white p-4 rounded-lg shadow-xl w-80 transform transition-all duration-300 scale-105">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">Edit Student</h2>
               <form onSubmit={handleSaveChanges} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {['first_name', 'last_name', 'email', 'phone', 'gender', 'present_address', 'permanent_address'].map((field) => (
-                  <div key={field} className="flex flex-col">
-                    <label htmlFor={field} className="text-sm font-medium text-gray-700 mb-1">
-                      {field.replace('_', ' ').toUpperCase()}
-                    </label>
-                    <input
-                      type="text"
-                      id={field}
-                      value={(currentStudent as any)[field]}
-                      onChange={(e) =>
-                        setCurrentStudent({ ...currentStudent, [field]: e.target.value })
-                      }
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
-                      placeholder={field.replace('_', ' ')}
-                      style={{ maxHeight: '40px' }}
-                    />
-                  </div>
-                ))}
+                <div className="flex flex-col">
+                  <label htmlFor="name" className="text-sm font-medium text-gray-700 mb-1">Name</label>
+                  <input
+                    type="text"
+                    id="name"
+                    value={currentStudent.name}
+                    onChange={(e) => setCurrentStudent({ ...currentStudent, name: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
+                    placeholder="Name"
+                    style={{ maxHeight: '40px' }}
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label htmlFor="surname" className="text-sm font-medium text-gray-700 mb-1">Surname</label>
+                  <input
+                    type="text"
+                    id="surname"
+                    value={currentStudent.surname}
+                    onChange={(e) => setCurrentStudent({ ...currentStudent, surname: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
+                    placeholder="Surname"
+                    style={{ maxHeight: '40px' }}
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label htmlFor="email" className="text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    value={currentStudent.email}
+                    onChange={(e) => setCurrentStudent({ ...currentStudent, email: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
+                    placeholder="Email"
+                    style={{ maxHeight: '40px' }}
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label htmlFor="phone" className="text-sm font-medium text-gray-700 mb-1">Phone</label>
+                  <input
+                    type="text"
+                    id="phone"
+                    value={currentStudent.phone}
+                    onChange={(e) => setCurrentStudent({ ...currentStudent, phone: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
+                    placeholder="Phone"
+                    style={{ maxHeight: '40px' }}
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label htmlFor="sex" className="text-sm font-medium text-gray-700 mb-1">Gender</label>
+                  <input
+                    type="text"
+                    id="sex"
+                    value={currentStudent.sex}
+                    onChange={(e) => setCurrentStudent({ ...currentStudent, sex: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
+                    placeholder="Gender"
+                    style={{ maxHeight: '40px' }}
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label htmlFor="address" className="text-sm font-medium text-gray-700 mb-1">Address</label>
+                  <input
+                    type="text"
+                    id="address"
+                    value={currentStudent.address}
+                    onChange={(e) => setCurrentStudent({ ...currentStudent, address: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
+                    placeholder="Address"
+                    style={{ maxHeight: '40px' }}
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label htmlFor="blood_group" className="text-sm font-medium text-gray-700 mb-1">Blood Group</label>
+                  <input
+                    type="text"
+                    id="blood_group"
+                    value={currentStudent.bloodType}
+                    onChange={(e) => setCurrentStudent({ ...currentStudent, bloodType: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
+                    placeholder="Blood Group"
+                    style={{ maxHeight: '40px' }}
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label htmlFor="birthday" className="text-sm font-medium text-gray-700 mb-1">Birthday</label>
+                  <input
+                    type="date"
+                    id="birthday"
+                    value={currentStudent.birthday}
+                    onChange={(e) => setCurrentStudent({ ...currentStudent, birthday: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
+                    style={{ maxHeight: '40px' }}
+                  />
+                </div>
                 <button
                   type="submit"
                   className="col-span-2 bg-purple-600 text-white p-2 rounded-lg hover:bg-purple-700 transition duration-300 ease-in-out"
@@ -210,4 +290,4 @@ const StudentsPage = ({ students, username, role }: StudentsPageProps) => {
   );
 };
 
-export default StudentsPage;
+export default StudentsPage

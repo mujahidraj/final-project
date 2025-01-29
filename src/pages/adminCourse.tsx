@@ -1,5 +1,3 @@
-
-// pages/adminCourses.tsx
 import { GetServerSideProps } from 'next';
 import jwt from 'jsonwebtoken';
 import { parseCookies } from 'nookies';
@@ -9,9 +7,10 @@ import "../globals.css";
 
 interface Course {
   id: number;
-  title: string;
+  name: string;
   description: string;
-  price: string;
+  duration: number;
+  teacherId: number;
 }
 
 interface AdminCoursesProps {
@@ -40,7 +39,7 @@ const AdminCourses = ({ username, role }: AdminCoursesProps) => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editCourse, setEditCourse] = useState<Course | null>(null);
-  const [formData, setFormData] = useState({ title: '', description: '', price: '' });
+  const [formData, setFormData] = useState({ name: '', description: '', duration: 0, teacherId: 0 });
 
   useEffect(() => {
     fetchCourses();
@@ -67,7 +66,7 @@ const AdminCourses = ({ username, role }: AdminCoursesProps) => {
       fetchCourses();
       setIsModalOpen(false);
       setEditCourse(null);
-      setFormData({ title: '', description: '', price: '' });
+      setFormData({ name: '', description: '', duration: 0, teacherId: 0 });
     }
   };
 
@@ -98,18 +97,20 @@ const AdminCourses = ({ username, role }: AdminCoursesProps) => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Duration (mins)</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Teacher ID</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {courses.map((course) => (
                 <tr key={course.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">{course.title}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{course.name}</td>
                   <td className="px-6 py-4 whitespace-nowrap max-w-xs truncate">{course.description}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">${course.price}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{course.duration}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{course.teacherId}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
                       onClick={() => {
@@ -140,13 +141,13 @@ const AdminCourses = ({ username, role }: AdminCoursesProps) => {
               <h2 className="text-xl font-bold mb-4">{editCourse ? 'Edit Course' : 'New Course'}</h2>
               <form onSubmit={handleSubmit}>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700">Title</label>
+                  <label className="block text-sm font-medium text-gray-700">Course Name</label>
                   <input
                     type="text"
                     required
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   />
                 </div>
                 <div className="mb-4">
@@ -159,13 +160,23 @@ const AdminCourses = ({ username, role }: AdminCoursesProps) => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700">Price</label>
+                  <label className="block text-sm font-medium text-gray-700">Duration (Minutes)</label>
                   <input
-                    type="text"
+                    type="number"
                     required
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                    value={formData.duration}
+                    onChange={(e) => setFormData({ ...formData, duration: parseInt(e.target.value) })}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">Teacher ID</label>
+                  <input
+                    type="number"
+                    required
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    value={formData.teacherId}
+                    onChange={(e) => setFormData({ ...formData, teacherId: parseInt(e.target.value) })}
                   />
                 </div>
                 <div className="flex justify-end space-x-4">
@@ -174,7 +185,7 @@ const AdminCourses = ({ username, role }: AdminCoursesProps) => {
                     onClick={() => {
                       setIsModalOpen(false);
                       setEditCourse(null);
-                      setFormData({ title: '', description: '', price: '' });
+                      setFormData({ name: '', description: '', duration: 0, teacherId: 0 });
                     }}
                     className="px-4 py-2 text-gray-600 hover:text-gray-800"
                   >

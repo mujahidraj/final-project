@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
+import { parseCookies } from 'nookies';
 
 const prisma = new PrismaClient();
 
@@ -12,9 +13,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     // Log the incoming request data for debugging
     console.log('Request body:', req.body);
-    console.log('Auth token from cookies:', req.cookies.authToken);
 
-    const { authToken } = req.cookies;
+    // Get the authToken from the cookies
+    const cookies = parseCookies({ req });
+    const { authToken } = cookies;
 
     // Ensure the token exists
     if (!authToken) {
@@ -37,40 +39,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ error: 'Invalid token payload' });
     }
 
-    // Extract data from request body
-    const { first_name, last_name, email, phone, gender, present_address, permanent_address } = req.body;
+    // Extract data from the request body
+    const { name, surname, email, phone, address, img, bloodType, sex, birthday } = req.body;
 
-    console.log('Profile data received:', { first_name, last_name, email, phone, gender, present_address, permanent_address });
+    console.log('Profile data received:', { name, surname, email, phone, address, img, bloodType, sex, birthday });
 
-    if (!first_name || !last_name || !email || !phone || !gender || !present_address || !permanent_address) {
+    // Check if any required field is missing
+    if (!name || !surname || !email || !phone || !address || !bloodType || !sex || !birthday) {
       console.error('Missing required fields');
       return res.status(400).json({ error: 'All fields are required' });
     }
 
-    const existingStudent = await prisma.students.findUnique({
-      where: { username: decoded.username },
-    });
-
-    if (!existingStudent) {
-      console.error('Student not found');
-      return res.status(404).json({ error: 'Student not found' });
-    }
-
+    // If the birthday is valid, update the profile
     const updatedStudent = await prisma.students.update({
       where: { username: decoded.username },
       data: {
-        first_name,
-        last_name,
+        name,
+        surname,
         email,
         phone,
-        gender,
-        present_address,
-        permanent_address,
+        address,
+        img,
+        bloodType,
+        sex,
+        birthday: new Date(birthday), // Dynamically pass the birthday value from request body
       },
     });
 
     console.log('Updated student profile:', updatedStudent);
     return res.status(200).json({ message: 'Profile updated successfully', updatedStudent });
+
   } catch (error: any) {
     // Enhanced error handling
     if (error instanceof Error) {
@@ -79,12 +77,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.error('Unknown error:', error); // Handle non-object errors
     }
 
-    // Specific Prisma error handling
-    if (error.code === 'P2025') {
-      return res.status(404).json({ error: 'Student not found' });
-    }
-
     return res.status(500).json({ error: 'Internal server error' });
   }
 }
-  
