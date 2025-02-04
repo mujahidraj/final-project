@@ -1,11 +1,9 @@
-// pages/dashboard.tsx
-
 import { GetServerSideProps } from 'next';
 import jwt from 'jsonwebtoken';
 import { parseCookies } from 'nookies';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { FaChartLine, FaUsers, FaCog, FaFileAlt, FaSignOutAlt, FaBars } from 'react-icons/fa';
+import { FaChartLine, FaUsers, FaCog, FaFileAlt, FaSignOutAlt, FaBars, FaBell } from 'react-icons/fa';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import "../globals.css";
 
@@ -49,12 +47,37 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 const Dashboard = ({ username, role }: DashboardProps) => {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]); // Change type to any[] to handle objects
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const res = await fetch('/api/adminNotification');  // API endpoint to fetch notifications
+        const data = await res.json();
+
+        if (res.ok) {
+          setNotifications(data.notifications.reverse());  // Ensure this is an array of objects or strings
+        } else {
+          console.error('Error fetching notifications:', data.message);
+        }
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    };
+
+    fetchNotifications();  // Fetch notifications when component mounts
+  }, []);  // Empty dependency array ensures this runs only once after component mounts
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   const handleLogout = async () => {
     await fetch('/api/adminLogout', { method: 'POST' });
     router.push('/adminLogin');
+  };
+
+  const handleToggleNotifications = () => {
+    setIsNotificationsOpen(!isNotificationsOpen);
   };
 
   // Sample data for the chart
@@ -87,25 +110,33 @@ const Dashboard = ({ username, role }: DashboardProps) => {
 
         {/* Sidebar Menu */}
         <nav className="px-2 py-4 space-y-2">
-          <a href="#" className="flex items-center p-3 text-gray-400 hover:bg-gray-700 hover:text-white rounded-md">
+          <a href="/adminAnnouncement" className="flex items-center p-3 text-gray-400 hover:bg-gray-700 hover:text-white rounded-md">
             <FaChartLine className="w-5 h-5 mr-3" />
-            Dashboard
+            Announcement
           </a>
           <a href="/adminCourse" className="flex items-center p-3 text-gray-400 hover:bg-gray-700 hover:text-white rounded-md">
             <FaUsers className="w-5 h-5 mr-3" />
             Courses
           </a>
+          <a href="/adminEnrollment" className="flex items-center p-3 text-gray-400 hover:bg-gray-700 hover:text-white rounded-md">
+            <FaUsers className="w-5 h-5 mr-3" />
+            Enrollments
+          </a>
           <a href="adminStudent" className="flex items-center p-3 text-gray-400 hover:bg-gray-700 hover:text-white rounded-md">
             <FaUsers className="w-5 h-5 mr-3" />
             Students
+          </a>
+          <a href="adminTransaction" className="flex items-center p-3 text-gray-400 hover:bg-gray-700 hover:text-white rounded-md">
+            <FaUsers className="w-5 h-5 mr-3" />
+            Transaction Statement
           </a>
           <a href="#" className="flex items-center p-3 text-gray-400 hover:bg-gray-700 hover:text-white rounded-md">
             <FaCog className="w-5 h-5 mr-3" />
             Settings
           </a>
-          <a href="#" className="flex items-center p-3 text-gray-400 hover:bg-gray-700 hover:text-white rounded-md">
+          <a href="adminEvent" className="flex items-center p-3 text-gray-400 hover:bg-gray-700 hover:text-white rounded-md">
             <FaFileAlt className="w-5 h-5 mr-3" />
-            Reports
+            events
           </a>
 
           {/* Display Username and Role in Sidebar */}
@@ -133,6 +164,32 @@ const Dashboard = ({ username, role }: DashboardProps) => {
               <FaSignOutAlt className="w-5 h-5 mr-2" />
               Logout
             </button>
+            {/* Notifications Icon */}
+            <div className="relative">
+              <button
+                onClick={handleToggleNotifications}
+                className="text-gray-800 p-2 rounded-md hover:bg-gray-200"
+              >
+                <FaBell className="w-5 h-5" />
+              </button>
+              {/* Notifications Dropdown */}
+              {isNotificationsOpen && (
+                <div className="absolute right-0 text-black w-64 mt-2 bg-white rounded-lg shadow-lg border border-gray-200">
+                  <div className="p-4 text-gray-800 font-semibold">Notifications</div>
+                  <ul className="max-h-64 overflow-y-auto">
+                    {notifications.length > 0 ? (
+                      notifications.map((notification, index) => (
+                        <li key={index} className="px-4 py-2 hover:bg-gray-100">
+                          {notification.message || notification}  {/* Adjusted to render the notification message */}
+                        </li>
+                      ))
+                    ) : (
+                      <li className="px-4 py-2 text-gray-500">No notifications available</li>
+                    )}
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -145,25 +202,25 @@ const Dashboard = ({ username, role }: DashboardProps) => {
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-lg font-semibold text-gray-800">Total Courses</h3>
-            <p className="text-2xl font-bold text-gray-900">567</p>
+            <p className="text-2xl font-bold text-gray-900">678</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold text-gray-800">Active Sessions</h3>
-            <p className="text-2xl font-bold text-gray-900">123</p>
+            <h3 className="text-lg font-semibold text-gray-800">Total Enrollments</h3>
+            <p className="text-2xl font-bold text-gray-900">5,678</p>
           </div>
         </div>
 
-        {/* Chart Section */}
+        {/* Chart */}
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">User & Course Statistics</h2>
-          <ResponsiveContainer width="100%" height={400}>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Monthly Users and Courses</h3>
+          <ResponsiveContainer width="100%" height={300}>
             <BarChart data={chartData}>
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="users" fill="#4F46E5" />
-              <Bar dataKey="courses" fill="#10B981" />
+              <Bar dataKey="users" fill="#8884d8" />
+              <Bar dataKey="courses" fill="#82ca9d" />
             </BarChart>
           </ResponsiveContainer>
         </div>

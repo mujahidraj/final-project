@@ -1,49 +1,59 @@
-// pages/api/courses/[id].ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
-import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 
-// In your API routes (e.g., pages/api/courses/index.ts)
-interface JwtPayload {
-    username: string;
-    role: string;
-  }
-  
-  const verifyAdmin = (token: string): JwtPayload | null => {
-    try {
-      return jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
-    } catch (error) {
-      return null;
-    }
-  };
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const token = req.cookies.adminAuthToken || '';
-  const decoded = verifyAdmin(token);
-
-  if (!decoded || decoded.role !== 'admin') {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
   const { id } = req.query;
 
+  if (!id || Array.isArray(id)) {
+    return res.status(400).json({ error: 'Invalid course ID' });
+  }
+
   switch (req.method) {
-    case 'PUT':
-      const { title, description, price } = req.body;
-      const updatedCourse = await prisma.course.update({
-        where: { id: Number(id) },
-        data: { title, description, price }
-      });
-      return res.json(updatedCourse);
-
+    case 'PATCH':
+      return updateCourse(req, res, parseInt(id));
     case 'DELETE':
-      await prisma.course.delete({ where: { id: Number(id) } });
-      return res.status(204).end();
-
+      return deleteCourse(req, res, parseInt(id));
     default:
-      res.setHeader('Allow', ['PUT', 'DELETE']);
-      return res.status(405).end(`Method ${req.method} Not Allowed`);
+      res.setHeader('Allow', ['PATCH', 'DELETE']);
+      res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
+}
+
+async function updateCourse(req: NextApiRequest, res: NextApiResponse, courseId: number) {
+  const { name, description, duration, teacherId, price } = req.body;
+
+  if (!name || typeof duration !== 'number' || typeof teacherId !== 'number' || typeof price !== 'number') {
+    return res.status(400).json({ error: 'Missing or invalid required fields' });
+  }
+
+  try {
+    const updatedCourse = await prisma.course.update({
+      where: { id: courseId },
+      data: {
+        name,
+        description: description || null,
+        duration,
+        teacherId,
+        price, // Update price field
+      },
+    });
+
+    res.status(200).json(updatedCourse);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update course' });
+  }
+}
+
+async function deleteCourse(req: NextApiRequest, res: NextApiResponse, courseId: number) {
+  try {
+    await prisma.course.delete({
+      where: { id: courseId },
+    });
+
+    res.status(204).end();
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete course' });
   }
 }

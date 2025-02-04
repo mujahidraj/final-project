@@ -59,10 +59,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         email,
         phone,
         address,
-        img,
+        img,  // Ensure that the image path is updated here
         bloodType,
         sex,
-        birthday: new Date(birthday), // Dynamically pass the birthday value from request body
+        birthday: new Date(birthday),
       },
     });
 

@@ -3,16 +3,41 @@ import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import cookie from 'cookie';
 import prisma from '@/lib/prisma';
+import { z } from 'zod';
+
+const studentSchema = z.object({
+  name: z.string().nonempty(),
+  surname: z.string().nonempty(),
+  email: z.string().email().optional(),
+  username: z.string().nonempty(),
+  password: z.string().min(6), // Example: minimum length of 6
+  phone: z.string().optional(),
+  address: z.string().nonempty(),
+  bloodType: z.string().nonempty(),
+  sex: z.string().nonempty(),
+  birthday: z.string().refine(
+    (date) => !isNaN(new Date(date).getTime()),
+    { message: 'Invalid date format' }
+  ),
+});
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    const { name, surname, email, username, password, phone, address, bloodType, sex, birthday } = req.body;
-
     try {
-      // Ensure all required fields are provided
-      if (!name || !surname || !username || !password || !address || !bloodType || !sex || !birthday) {
-        return res.status(400).json({ error: 'All fields are required.' });
-      }
+      // Validate the request body using Zod
+      const validatedData = studentSchema.parse(req.body);
+      const {
+        name,
+        surname,
+        email,
+        username,
+        password,
+        phone,
+        address,
+        bloodType,
+        sex,
+        birthday,
+      } = validatedData;
 
       // Hash the password using argon2
       const hashedPassword = await argon2.hash(password);
@@ -37,18 +62,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const token = jwt.sign({ userId: student.id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
 
       // Set the token in a cookie
-      res.setHeader('Set-Cookie', cookie.serialize('authToken', token, {
-        httpOnly: true,  // Makes the cookie inaccessible from JavaScript
-        secure: process.env.NODE_ENV === 'production',  // Ensures the cookie is only sent over HTTPS
-        maxAge: 60 * 60,  // 1 hour expiration
-        path: '/',
-      }));
+      res.setHeader(
+        'Set-Cookie',
+        cookie.serialize('authToken', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          maxAge: 60 * 60,
+          path: '/',
+        })
+      );
 
       // Respond with a success message
       return res.status(201).json({ message: 'Student registered successfully' });
     } catch (error) {
-      console.error(error); // Log the error for debugging
-      res.status(400).json({ error: 'Student registration failed. Please check the input.' });
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      console.error(error);
+      return res.status(400).json({ error: 'Student registration failed. Please check the input.' });
     }
   } else {
     res.status(405).json({ error: 'Method not allowed' });

@@ -109,7 +109,7 @@ const Profile = ({
   };
 
   return (
-    <div className="flex bg-gradient-to-r from-blue-50 to-purple-50 justify-center items-center min-h-screen p-4">
+    <div className="flex bg-gradient-to-r text-gray-500 from-blue-50 to-purple-50 justify-center items-center min-h-screen p-4">
       <div className="max-w-4xl w-full bg-white shadow-2xl rounded-2xl overflow-hidden">
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6">
           <div className="flex justify-between items-center">

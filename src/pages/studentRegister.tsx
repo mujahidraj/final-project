@@ -37,12 +37,21 @@ export default function Register() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center bg-gradient-to-r from-purple-600 via-blue-500 to-green-500 py-10">
-      <div className="w-full max-w-4xl bg-white rounded-lg shadow-md p-8">
+    <div className="flex flex-col items-center justify-center bg-blue-100 py-10">
+      <div className="w-full  max-w-4xl bg-white rounded-lg shadow-md p-8">
         <div className="flex flex-col items-center mb-6">
-          <img src="/image/1.png" alt="Company Logo" className="w-24 h-24 mb-2" />
+         
           <h1 className="text-2xl font-bold text-gray-900">TechWisdom</h1>
         </div>
+
+        {/* Back Button */}
+        <button
+          onClick={() => router.push('/')}
+          className="text-blue-500 hover:text-blue-700 mb-4"
+        >
+          &larr; Back to Home
+        </button>
+
         <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Student Registration</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex space-x-8">

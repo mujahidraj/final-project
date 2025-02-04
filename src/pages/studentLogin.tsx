@@ -43,27 +43,26 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-600 via-blue-500 to-green-500 p-4">
+    <div className="flex flex-col  items-center justify-center min-h-screen bg-blue-100 p-4">
       {/* Logo and Company Name */}
       <motion.div
-        className="flex items-center mb-8"
+        className="mb-8"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        <img src="./image/1.png" alt="TechWisdom Logo" className="w-16 h-16 mr-3" />
-        <h1 className="text-5xl font-bold text-white drop-shadow-lg">TechWisdom</h1>
+        <h1 className="text-3xl font-bold text-gray-800 drop-shadow-lg">TechWisdom</h1>
       </motion.div>
 
       {/* Login Form */}
       <motion.form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-6 p-10 bg-white rounded-2xl shadow-2xl max-w-md w-full"
+        className="flex flex-col gap-6 p-10 bg-white rounded-2xl shadow-2xl max-w-md w-full border border-gray-200"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        <h2 className="text-4xl mb-6 text-center text-gray-800 font-bold">
+        <h2 className="text-2xl mb-6 text-center text-gray-800 font-bold">
           Student Sign In
         </h2>
 
@@ -108,7 +107,7 @@ export default function Login() {
 
       {/* Sign Up Link */}
       <motion.p
-        className="mt-6 text-white text-lg"
+        className="mt-6 text-gray-800 text-lg"
         variants={containerVariants}
         initial="hidden"
         animate="visible"

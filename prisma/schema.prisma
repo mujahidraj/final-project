@@ -32,18 +32,16 @@ datasource db {
   transactions Transaction[]
 }
 
-model course{
-  id Int @id @default(autoincrement())
-  title String
-  description String
-  price String
-}
+
 
 model AdminUser {
   id       Int    @id @default(autoincrement())
   username String @unique
   password String
   role     String @default("admin")
+  notifications Notification[]
+
+  studentNotification studentNotification[]
 }
 
 
@@ -73,23 +71,48 @@ model Course {
   duration   Int        // Duration in minutes
   createdAt  DateTime   @default(now())
   teacherId  Int
+  price Int
   teacher    teacher    @relation(fields: [teacherId], references: [id])
   enrollments Enrollment[]
   reviews     Review[]
+
   lessons    Lesson[]
+
+  assignment assignment[]
 }
 
 model Enrollment {
   id          Int        @id @default(autoincrement())
   studentId   Int
-  student     students   @relation(fields: [studentId], references: [id])
+  student     students    @relation(fields: [studentId], references: [id])
   courseId    Int
-  course      Course    @relation(fields: [courseId], references: [id])
-  enrolledAt  DateTime  @default(now())
+  course      Course     @relation(fields: [courseId], references: [id])
+  enrolledAt  DateTime   @default(now())
   completedAt DateTime?
-  status      EnrollmentStatus
+  status      String
   transactions Transaction[]
 }
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  message   String
+  read      Boolean  @default(false)
+  userId    Int
+  user      AdminUser    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+
+model studentNotification {
+  id        Int      @id @default(autoincrement())
+  message   String
+  read      Boolean  @default(false)
+  userId    Int
+  user      AdminUser    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+
 
 model Lesson {
   id        Int      @id @default(autoincrement())
@@ -129,10 +152,49 @@ model Transaction {
 }
 
 
+model Report {
+  id          Int      @id @default(autoincrement())
+  studentId   Int
+  title       String
+  report      String
+  teacherName String?
+  courseName  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isDeleted   Boolean  @default(false)
 
-enum EnrollmentStatus {
-  PENDING
-  COMPLETED
-  IN_PROGRESS
-  CANCELLED
+  @@index([studentId]) // Index on studentId for faster queries
 }
+
+
+
+model announcement{
+  id Int @id @default(autoincrement())
+  heading String
+  body String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model assignment {
+  id Int @id @default(autoincrement())
+  title String
+  body String
+  points String
+  dueDate DateTime
+  courseId Int
+  course Course @relation(fields: [courseId],references: [id])
+}
+
+model event{
+  id Int @id @default(autoincrement())
+  name String
+  description String
+  eventDate DateTime
+  eventPlace String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
